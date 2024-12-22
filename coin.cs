@@ -17,8 +17,9 @@ public class coin : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("coin touched");
-        other.gameObject.SendMessage("AddScore", 1);
-        Destroy(gameObject);
+        if(other.gameObject.tag == "Player"){
+            other.gameObject.SendMessage("AddScore", 1);
+            Destroy(gameObject);
+        }
     }
 }

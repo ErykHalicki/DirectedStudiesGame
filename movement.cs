@@ -2,30 +2,51 @@ using UnityEngine;
 
 public class movement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    LayerMask mask;
 
     [SerializeField]
     private Rigidbody2D rgbd;
 
     [SerializeField]
-    float speed = 5.0f;
+    private float speed = 5.0f;
 
     [SerializeField]
-    float jumpForce = 400.0f;
+    private float jumpForce = 400.0f;
+
+    [SerializeField]
+    private bool isPlayer = false;
+
+    private float direction = 0;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        mask = LayerMask.GetMask("Platforms");
+    }
+
+    public void Jump(){
+        if(rgbd.IsTouchingLayers(mask)){
+            rgbd.AddRelativeForceY(jumpForce);
+        } 
+    }
+
+    public void SetDirection(float dir){
+        direction = dir;
+    }
+
+    public void FlipDirection(){
+        direction *= -1;
+    }
 
     void Update()
     {
-        if(Input.GetKeyDown("space") & rgbd.IsTouchingLayers()){
-            rgbd.AddRelativeForceY(jumpForce); //jump
-            Debug.Log("space key was pressed");
-         }
-        rgbd.linearVelocityX = Input.GetAxis("Horizontal") * speed;  
-    }
+        if(isPlayer){
+            SetDirection(Input.GetAxis("Horizontal")); 
+            if(Input.GetKeyDown("space")){
+                Jump();
+            }
+        }
 
-    private void FixedUpdate(){
-         
+        rgbd.linearVelocityX = direction * speed;  
     }
 }
